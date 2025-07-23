@@ -5,9 +5,10 @@ import gpsUtil.location.VisitedLocation;
 
 public class UserReward {
 
-	public final VisitedLocation visitedLocation;
-	public final Attraction attraction;
-	private int rewardPoints;
+	public final VisitedLocation visitedLocation; // représente une position géographique visitée précédemment (latitude, longitude)
+	public final Attraction attraction; // représente une attraction touristique
+	private int rewardPoints; // nombre de points de récompenses
+	
 	public UserReward(VisitedLocation visitedLocation, Attraction attraction, int rewardPoints) {
 		this.visitedLocation = visitedLocation;
 		this.attraction = attraction;
