@@ -23,7 +23,7 @@ public class User {
 																			// par le user
 	private UserPreferences userPreferences = new UserPreferences(); // liste des préférences (filtres) déterminés par
 																		// le user
-	private List<Provider> tripDeals = new CopyOnWriteArrayList<>(); // liste des offres (récompenses) en cours du user
+	private List<Provider> tripDeals = new CopyOnWriteArrayList<>(); // liste des offres (récompenses) du user
 
 	public User(UUID userId, String userName, String phoneNumber, String emailAddress) {
 		this.userId = userId;
@@ -77,7 +77,7 @@ public class User {
 	}
 
 	public void addUserReward(UserReward userReward) {
-		// anyMatch && .add pas atomiques -> risque de concurrence (!= thread-safe)
+		// anyMatch && .add pas atomiques -> risque de concurrence (!= thread-safe) => bloc de code synchronized 
 		synchronized (userRewards) {
 			// Verifie si l'utilisateur a déjà une récomprense pour cette attraction
 			boolean hasRewardForAttraction = userRewards.stream()
