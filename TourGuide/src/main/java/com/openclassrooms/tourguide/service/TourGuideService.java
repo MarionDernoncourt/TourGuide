@@ -1,10 +1,5 @@
 package com.openclassrooms.tourguide.service;
 
-import com.openclassrooms.tourguide.helper.InternalTestHelper;
-import com.openclassrooms.tourguide.tracker.Tracker;
-import com.openclassrooms.tourguide.user.User;
-import com.openclassrooms.tourguide.user.UserReward;
-
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
@@ -23,11 +18,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import com.openclassrooms.tourguide.dto.NearbyAttractionDTO;
+import com.openclassrooms.tourguide.helper.InternalTestHelper;
+import com.openclassrooms.tourguide.tracker.Tracker;
+import com.openclassrooms.tourguide.user.User;
+import com.openclassrooms.tourguide.user.UserReward;
+
 import gpsUtil.GpsUtil;
 import gpsUtil.location.Attraction;
 import gpsUtil.location.Location;
 import gpsUtil.location.VisitedLocation;
-
 import tripPricer.Provider;
 import tripPricer.TripPricer;
 
@@ -100,15 +100,38 @@ public class TourGuideService {
 		return visitedLocation;
 	}
 
-	public List<Attraction> getNearByAttractions(VisitedLocation visitedLocation) {
+	public List<NearbyAttractionDTO> getNearbyAttractions(String userName) {
 
-		Location userLastLocation = visitedLocation.location;
+		User user = getUser(userName);
+
+		Location userLastLocation = user.getLastVisitedLocation().location;
 
 		List<Attraction> nearbyAttractions = gpsUtil.getAttractions().stream()
 				.sorted(Comparator.comparingDouble(a -> rewardsService.getDistance(a, userLastLocation))).limit(5)
 				.collect(Collectors.toList());
 
-		return nearbyAttractions;
+		
+		List<NearbyAttractionDTO> attractionsList = new ArrayList<>();
+		
+		for (Attraction nearbyAttraction : nearbyAttractions) {
+			
+			NearbyAttractionDTO attraction = new NearbyAttractionDTO();
+
+			attraction.setAttractionName(nearbyAttraction.attractionName);
+			;
+			attraction.setAttractionLatitude(nearbyAttraction.latitude);
+			attraction.setAttractionLongitude(nearbyAttraction.longitude);
+			attraction.setUserLatitude(userLastLocation.latitude);
+			attraction.setUserLongitude(userLastLocation.longitude);
+			attraction.setDistanceToAttractionInMiles(rewardsService.getDistance(userLastLocation,
+					new Location(nearbyAttraction.latitude, nearbyAttraction.longitude)));
+			attraction.setRewardPoints(rewardsService.getRewardPoints(nearbyAttraction, user));
+
+			attractionsList.add(attraction);
+		}
+		
+		
+		return attractionsList;
 	}
 
 	private void addShutDownHook() {

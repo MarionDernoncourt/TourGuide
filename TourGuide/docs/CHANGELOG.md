@@ -17,11 +17,12 @@ Le format suit les principes de [Keep a Changelog](https://keepachangelog.com/fr
 
   
 ### Ajouté
-- *(nom d'une nouvelle méthode ou classe)* : courte description de ce que tu as ajouté.
 
 ### Supprimé
-- *(si tu supprimes un élément du code ou une fonctionnalité inutile)*
 
 ### Corrigé
 - **Bug dans la méthode `getNearByAttractions(...)`** : aucun résultat n’était retourné si aucune attraction n’était située dans la zone de proximité (définie par `proximityBuffer`). Ce comportement bloquait certaines fonctionnalités ; il a été corrigé en supprimant le filtre de distance au profit d’un tri global sur toutes les attractions.
+- **Ajout de la classe `NearbyAttractionDTO`** pour encapsuler et structurer les données renvoyées par la méthode `getNearbyAttractions` dans le contrôleur, facilitant la sérialisation JSON et la gestion des réponses API.
+- **Visibilité modifiée** : la méthode `getRewardsPoints()` dans `RewardsService` est passée de `private` à `public` pour permettre son utilisation dans d'autres classes (ex. dans le contrôleur ou lors des tests).
+
   
