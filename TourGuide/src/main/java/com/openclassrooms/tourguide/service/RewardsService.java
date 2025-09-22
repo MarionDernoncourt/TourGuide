@@ -44,31 +44,20 @@ public class RewardsService {
 		List<VisitedLocation> userLocations = user.getVisitedLocations();
 		List<Attraction> attractions = gpsUtil.getAttractions();
 
-		ExecutorService executor = Executors.newFixedThreadPool(10);
-
 		for (VisitedLocation visitedLocation : userLocations) {
-			executor.submit(() -> {
-				for (Attraction attraction : attractions) {
-					if (user.getUserRewards().stream()
-							.filter(r -> r.attraction.attractionName.equals(attraction.attractionName)).count() == 0) {
-						if (nearAttraction(visitedLocation, attraction)) {
-							user.addUserReward(
-									new UserReward(visitedLocation, attraction, getRewardPoints(attraction, user)));
-						}
+
+			for (Attraction attraction : attractions) {
+				if (user.getUserRewards().stream()
+						.filter(r -> r.attraction.attractionName.equals(attraction.attractionName)).count() == 0) {
+					if (nearAttraction(visitedLocation, attraction)) {
+						user.addUserReward(
+								new UserReward(visitedLocation, attraction, getRewardPoints(attraction, user)));
 					}
 				}
-			});
-		}
-		executor.shutdown();
-		try {
-			if (!executor.awaitTermination(60, TimeUnit.SECONDS)) {
-				System.out.println("Timeout : certaines tâches ne sont pas terminées, arret forcé");
-				executor.shutdownNow();
 			}
-		} catch (InterruptedException e) {
-			Thread.currentThread().interrupt();
-			executor.shutdownNow();
 		}
+		;
+
 	}
 
 	public boolean isWithinAttractionProximity(Attraction attraction, Location location) {

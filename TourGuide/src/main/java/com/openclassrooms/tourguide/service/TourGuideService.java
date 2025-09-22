@@ -11,6 +11,9 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Random;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -28,6 +31,7 @@ import gpsUtil.GpsUtil;
 import gpsUtil.location.Attraction;
 import gpsUtil.location.Location;
 import gpsUtil.location.VisitedLocation;
+import jakarta.annotation.PreDestroy;
 import tripPricer.Provider;
 import tripPricer.TripPricer;
 
@@ -40,9 +44,12 @@ public class TourGuideService {
 	public final Tracker tracker;
 	boolean testMode = true;
 
+	private final ExecutorService executorService;
+
 	public TourGuideService(GpsUtil gpsUtil, RewardsService rewardsService) {
 		this.gpsUtil = gpsUtil;
 		this.rewardsService = rewardsService;
+		this.executorService = Executors.newFixedThreadPool(100);
 
 		Locale.setDefault(Locale.US);
 
@@ -100,6 +107,23 @@ public class TourGuideService {
 		return visitedLocation;
 	}
 
+	public CompletableFuture<Void> trackAllUserLocation() {
+		List<User> users = getAllUsers();
+
+		List<CompletableFuture<Void>> futures = users.stream().map(user -> CompletableFuture.runAsync(() -> {
+			trackUserLocation(user);
+		}, executorService)).toList();
+
+		return CompletableFuture.allOf(futures.toArray(new CompletableFuture[0]));
+
+	}
+
+	@PreDestroy
+	public void shutdownExecutor() {
+		logger.info("Shutting down ExecutorService...");
+		executorService.shutdown();
+	}
+
 	public List<NearbyAttractionDTO> getNearbyAttractions(String userName) {
 
 		User user = getUser(userName);
@@ -110,11 +134,10 @@ public class TourGuideService {
 				.sorted(Comparator.comparingDouble(a -> rewardsService.getDistance(a, userLastLocation))).limit(5)
 				.collect(Collectors.toList());
 
-		
 		List<NearbyAttractionDTO> attractionsList = new ArrayList<>();
-		
+
 		for (Attraction nearbyAttraction : nearbyAttractions) {
-			
+
 			NearbyAttractionDTO attraction = new NearbyAttractionDTO();
 
 			attraction.setAttractionName(nearbyAttraction.attractionName);
@@ -129,8 +152,7 @@ public class TourGuideService {
 
 			attractionsList.add(attraction);
 		}
-		
-		
+
 		return attractionsList;
 	}
 
