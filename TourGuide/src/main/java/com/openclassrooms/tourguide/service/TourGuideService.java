@@ -14,6 +14,7 @@ import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -120,10 +121,15 @@ public class TourGuideService {
 
 	@PreDestroy
 	public void shutdownExecutor() {
-		logger.info("Shutting down ExecutorService...");
-		executorService.shutdown();
+	    executorService.shutdown();
+	    try {
+	        if (!executorService.awaitTermination(30, TimeUnit.SECONDS)) {
+	            executorService.shutdownNow();
+	        }
+	    } catch (InterruptedException e) {
+	        executorService.shutdownNow();
+	    }
 	}
-
 	public List<NearbyAttractionDTO> getNearbyAttractions(String userName) {
 
 		User user = getUser(userName);

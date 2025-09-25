@@ -1,19 +1,25 @@
 package com.openclassrooms.tourguide.service;
 
 import java.util.List;
+import java.util.Set;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
+
+import com.openclassrooms.tourguide.user.User;
+import com.openclassrooms.tourguide.user.UserReward;
 
 import gpsUtil.GpsUtil;
 import gpsUtil.location.Attraction;
 import gpsUtil.location.Location;
 import gpsUtil.location.VisitedLocation;
+import jakarta.annotation.PreDestroy;
 import rewardCentral.RewardCentral;
-import com.openclassrooms.tourguide.user.User;
-import com.openclassrooms.tourguide.user.UserReward;
 
 @Service
 public class RewardsService {
@@ -26,6 +32,8 @@ public class RewardsService {
 	private int attractionProximityRange = 200;
 	private final GpsUtil gpsUtil;
 	private final RewardCentral rewardsCentral;
+
+	private final ExecutorService executorService = Executors.newFixedThreadPool(200);
 
 	public RewardsService(GpsUtil gpsUtil, RewardCentral rewardCentral) {
 		this.gpsUtil = gpsUtil;
@@ -41,23 +49,42 @@ public class RewardsService {
 	}
 
 	public void calculateRewards(User user) {
+		// Récupère les lieux visités par l'utilisateur et toutes les attractions
 		List<VisitedLocation> userLocations = user.getVisitedLocations();
 		List<Attraction> attractions = gpsUtil.getAttractions();
 
-		for (VisitedLocation visitedLocation : userLocations) {
+		// Concurrent Set pour vérifier si l'utilisateur a déjà reçu une récompense
+		Set<String> rewardedAttractions = ConcurrentHashMap.newKeySet();
+		rewardedAttractions.addAll(
+				user.getUserRewards().stream().map(a -> a.attraction.attractionName).collect(Collectors.toSet()));
 
+		//Boucle séquentielle sur chaque lieu visité par l'utilisateur
+		for (VisitedLocation visitedLocation : userLocations) {
+			// Boucle séquentielle sur chaque attraction
 			for (Attraction attraction : attractions) {
-				if (user.getUserRewards().stream()
-						.filter(r -> r.attraction.attractionName.equals(attraction.attractionName)).count() == 0) {
-					if (nearAttraction(visitedLocation, attraction)) {
-						user.addUserReward(
-								new UserReward(visitedLocation, attraction, getRewardPoints(attraction, user)));
+				// Vérifie si l'utilisateur est proche de l'attraction
+				if (nearAttraction(visitedLocation, attraction)) {
+					// Le ConcurrentHashSet gère la threadSafety pour l'ajout
+					if (rewardedAttractions.add(attraction.attractionName)) {
+						int points = getRewardPoints(attraction, user);
+						// Ajoute la récompense si elle n'a pas encore été attribuée
+						user.addUserReward(new UserReward(visitedLocation, attraction, points));
+
 					}
 				}
 			}
 		}
-		;
 
+	}
+
+	public void calculateRewardsForAllUsers(List<User> users) {
+		// Lance le calcul des récompenses de manière asynchrone pour tous les
+		// utilisateurs
+		List<CompletableFuture<Void>> userFutures = users.stream()
+				.map(user -> CompletableFuture.runAsync(() -> calculateRewards(user), executorService))
+				.collect(Collectors.toList());
+		// attends que tout les calculs soient terminés avant de continuer
+		CompletableFuture.allOf(userFutures.toArray(new CompletableFuture[0])).join();
 	}
 
 	public boolean isWithinAttractionProximity(Attraction attraction, Location location) {
@@ -84,6 +111,18 @@ public class RewardsService {
 		double nauticalMiles = 60 * Math.toDegrees(angle);
 		double statuteMiles = STATUTE_MILES_PER_NAUTICAL_MILE * nauticalMiles;
 		return statuteMiles;
+	}
+
+	@PreDestroy
+	public void shutdownExecutor() {
+		executorService.shutdown();
+		try {
+			if (!executorService.awaitTermination(30, TimeUnit.SECONDS)) {
+				executorService.shutdownNow();
+			}
+		} catch (InterruptedException e) {
+			executorService.shutdownNow();
+		}
 	}
 
 }

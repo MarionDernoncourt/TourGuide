@@ -75,7 +75,7 @@ public class TestPerformance {
 
 		// Users should be incremented up to 100,000, and test finishes within 20
 		// minutes
-		InternalTestHelper.setInternalUserNumber(100);
+		InternalTestHelper.setInternalUserNumber(100000);
 		StopWatch stopWatch = new StopWatch();
 		stopWatch.start();
 		TourGuideService tourGuideService = new TourGuideService(gpsUtil, rewardsService);
@@ -83,11 +83,13 @@ public class TestPerformance {
 		Attraction attraction = gpsUtil.getAttractions().get(0);
 		List<User> allUsers = new ArrayList<>();
 		allUsers = tourGuideService.getAllUsers();
-		allUsers.forEach(u -> u.addToVisitedLocations(new VisitedLocation(u.getUserId(), attraction, new Date())));
+		allUsers.forEach(user -> user.addToVisitedLocations(new VisitedLocation(user.getUserId(), attraction, new Date())));
 
-		allUsers.forEach(u -> rewardsService.calculateRewards(u));
 
+		rewardsService.calculateRewardsForAllUsers(allUsers);
+		
 		for (User user : allUsers) {
+			System.out.println(user.getUserRewards());
 			assertTrue(user.getUserRewards().size() > 0);
 		}
 		stopWatch.stop();
