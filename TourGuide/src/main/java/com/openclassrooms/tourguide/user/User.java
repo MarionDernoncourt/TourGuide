@@ -1,9 +1,9 @@
 package com.openclassrooms.tourguide.user;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 import gpsUtil.location.VisitedLocation;
 import tripPricer.Provider;
@@ -16,14 +16,14 @@ public class User {
 	private Date latestLocationTimestamp; // date à laquelle il a été localisé en dernier
 
 	//
-	private List<VisitedLocation> visitedLocations = new CopyOnWriteArrayList<>(); // liste des lieux visités
+	private List<VisitedLocation> visitedLocations = new ArrayList<>(); // liste des lieux visités
 
 	//
-	private List<UserReward> userRewards = new CopyOnWriteArrayList<>(); // liste de l'historique des récompenses reçues
-																			// par le user
+	private List<UserReward> userRewards = new ArrayList<>(); // liste de l'historique des récompenses reçues
+																// par le user
 	private UserPreferences userPreferences = new UserPreferences(); // liste des préférences (filtres) déterminés par
 																		// le user
-	private List<Provider> tripDeals = new CopyOnWriteArrayList<>(); // liste des offres (récompenses) du user
+	private List<Provider> tripDeals = new ArrayList<>(); // liste des offres (récompenses) du user
 
 	public User(UUID userId, String userName, String phoneNumber, String emailAddress) {
 		this.userId = userId;
@@ -77,14 +77,10 @@ public class User {
 	}
 
 	public void addUserReward(UserReward userReward) {
-		// anyMatch && .add pas atomiques -> risque de concurrence (!= thread-safe) => bloc de code synchronized 
-		synchronized (userRewards) {
-			// Verifie si l'utilisateur a déjà une récomprense pour cette attraction
-			boolean hasRewardForAttraction = userRewards.stream()
-					.anyMatch(r -> r.attraction.attractionName.equals(userReward.attraction.attractionName));
-			if (!hasRewardForAttraction) {
-				userRewards.add(userReward);
-			}
+		boolean alreadyPresent = userRewards.stream()
+				.anyMatch(r -> r.attraction.attractionName.equals(userReward.attraction.attractionName));
+		if (!alreadyPresent) {
+			userRewards.add(userReward);
 		}
 	}
 

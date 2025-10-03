@@ -12,6 +12,8 @@ import java.util.concurrent.TimeUnit;
 import org.apache.commons.lang3.time.StopWatch;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import gpsUtil.GpsUtil;
 import gpsUtil.location.Attraction;
@@ -47,13 +49,16 @@ public class TestPerformance {
 	 * TimeUnit.MILLISECONDS.toSeconds(stopWatch.getTime()));
 	 */
 
-	@Test
-	public void highVolumeTrackLocation() {
+	
+	
+	@ParameterizedTest
+	@ValueSource(ints = {100, 1000, 5000, 10_000, 50_000, 100_000})
+	public void highVolumeTrackLocation(int userAccount) {
 		GpsUtil gpsUtil = new GpsUtil();
 		RewardsService rewardsService = new RewardsService(gpsUtil, new RewardCentral());
 		// Users should be incremented up to 100,000, and test finishes within 15
 		// minutes
-		InternalTestHelper.setInternalUserNumber(100000);
+		InternalTestHelper.setInternalUserNumber(userAccount);
 		TourGuideService tourGuideService = new TourGuideService(gpsUtil, rewardsService);
 
 		StopWatch stopWatch = new StopWatch();
@@ -68,14 +73,15 @@ public class TestPerformance {
 		assertTrue(TimeUnit.MINUTES.toSeconds(15) >= TimeUnit.MILLISECONDS.toSeconds(stopWatch.getTime()));
 	}
 
-	@Test
-	public void highVolumeGetRewards() {
+	@ParameterizedTest
+	@ValueSource(ints = {100, 1000, 10_000, 100_000})
+	public void highVolumeGetRewards(int userAccount) {
 		GpsUtil gpsUtil = new GpsUtil();
 		RewardsService rewardsService = new RewardsService(gpsUtil, new RewardCentral());
 
 		// Users should be incremented up to 100,000, and test finishes within 20
 		// minutes
-		InternalTestHelper.setInternalUserNumber(100000);
+		InternalTestHelper.setInternalUserNumber(userAccount);
 		StopWatch stopWatch = new StopWatch();
 		stopWatch.start();
 		TourGuideService tourGuideService = new TourGuideService(gpsUtil, rewardsService);
@@ -89,7 +95,6 @@ public class TestPerformance {
 		rewardsService.calculateRewardsForAllUsers(allUsers);
 		
 		for (User user : allUsers) {
-			System.out.println(user.getUserRewards());
 			assertTrue(user.getUserRewards().size() > 0);
 		}
 		stopWatch.stop();

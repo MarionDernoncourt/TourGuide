@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -49,16 +50,17 @@ public class RewardsService {
 	}
 
 	public void calculateRewards(User user) {
-		// Récupère les lieux visités par l'utilisateur et toutes les attractions
-		List<VisitedLocation> userLocations = user.getVisitedLocations();
-		List<Attraction> attractions = gpsUtil.getAttractions();
+		// Récupère les lieux visités par l'utilisateur et toutes les attractions de
+		// manière safe-thread
+		List<VisitedLocation> userLocations = new CopyOnWriteArrayList<VisitedLocation>(user.getVisitedLocations());
+		List<Attraction> attractions = new CopyOnWriteArrayList<Attraction>(gpsUtil.getAttractions());
 
-		// Concurrent Set pour vérifier si l'utilisateur a déjà reçu une récompense
+		// Concurrent Set pour éviter les doublons de récompense
 		Set<String> rewardedAttractions = ConcurrentHashMap.newKeySet();
 		rewardedAttractions.addAll(
 				user.getUserRewards().stream().map(a -> a.attraction.attractionName).collect(Collectors.toSet()));
 
-		//Boucle séquentielle sur chaque lieu visité par l'utilisateur
+		// Boucle séquentielle sur chaque lieu visité par l'utilisateur
 		for (VisitedLocation visitedLocation : userLocations) {
 			// Boucle séquentielle sur chaque attraction
 			for (Attraction attraction : attractions) {

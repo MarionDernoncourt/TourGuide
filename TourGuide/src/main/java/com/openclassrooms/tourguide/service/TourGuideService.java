@@ -121,44 +121,51 @@ public class TourGuideService {
 
 	@PreDestroy
 	public void shutdownExecutor() {
-	    executorService.shutdown();
-	    try {
-	        if (!executorService.awaitTermination(30, TimeUnit.SECONDS)) {
-	            executorService.shutdownNow();
-	        }
-	    } catch (InterruptedException e) {
-	        executorService.shutdownNow();
-	    }
+		executorService.shutdown();
+		try {
+			if (!executorService.awaitTermination(30, TimeUnit.SECONDS)) {
+				executorService.shutdownNow();
+			}
+		} catch (InterruptedException e) {
+			executorService.shutdownNow();
+		}
 	}
+
 	public List<NearbyAttractionDTO> getNearbyAttractions(String userName) {
 
+		// Récupération de la dernière localisation de l'utilisateur
 		User user = getUser(userName);
-
 		Location userLastLocation = user.getLastVisitedLocation().location;
 
+		// Trie toutes les attractions par distance croissante par rapport à
+		// l'utilisateur et récupère les 5 plus proches
 		List<Attraction> nearbyAttractions = gpsUtil.getAttractions().stream()
 				.sorted(Comparator.comparingDouble(a -> rewardsService.getDistance(a, userLastLocation))).limit(5)
 				.collect(Collectors.toList());
 
+		// Prépare la liste de DTO à retourner
 		List<NearbyAttractionDTO> attractionsList = new ArrayList<>();
 
+		// Pour chaque attraction proche
 		for (Attraction nearbyAttraction : nearbyAttractions) {
 
+			// Complete une fiche DTO avec les informations de l'attraction
 			NearbyAttractionDTO attraction = new NearbyAttractionDTO();
 
 			attraction.setAttractionName(nearbyAttraction.attractionName);
 			;
-			attraction.setAttractionLatitude(nearbyAttraction.latitude);
-			attraction.setAttractionLongitude(nearbyAttraction.longitude);
-			attraction.setUserLatitude(userLastLocation.latitude);
-			attraction.setUserLongitude(userLastLocation.longitude);
+			attraction.setAttractionLocation(new Location(nearbyAttraction.latitude, nearbyAttraction.longitude));
+			attraction.setUserLocation(userLastLocation);
+			// Distance entre l'utilisateur et l'attraction
 			attraction.setDistanceToAttractionInMiles(rewardsService.getDistance(userLastLocation,
 					new Location(nearbyAttraction.latitude, nearbyAttraction.longitude)));
+			// Points de récompense
 			attraction.setRewardPoints(rewardsService.getRewardPoints(nearbyAttraction, user));
 
 			attractionsList.add(attraction);
 		}
-
+		
+		// Retourne la liste des 5 attractions les plus proches sous forme de DTO
 		return attractionsList;
 	}
 

@@ -1,71 +1,65 @@
 package com.openclassrooms.tourguide.dto;
 
+import gpsUtil.location.Location;
+
 public class NearbyAttractionDTO {
 
 	private String attractionName;
-	private double attractionLatitude;
-	private double attractionLongitude;
-	private double userLatitude;
-	private double userLongitude;
+	private Location attractionLocation;
+	private Location userLocation;
 	private double distanceToAttractionInMiles;
 	private int rewardPoints;
 	
 	public NearbyAttractionDTO() {
-		
-	};
-	
-	public NearbyAttractionDTO(String attractionName, double attractionLatitude, double attractionLongitude,
-			double userLatitude, double userLongitude, double distanceToAttractionInMiles, int rewardPoints) {
-		super();
+
+	}
+
+	public NearbyAttractionDTO(String attractionName, Location attractionLocation, Location userLocation,
+			double distanceToAttractionInMiles, int rewardPoints) {
 		this.attractionName = attractionName;
-		this.attractionLatitude = attractionLatitude;
-		this.attractionLongitude = attractionLongitude;
-		this.userLatitude = userLatitude;
-		this.userLongitude = userLongitude;
+		this.attractionLocation = attractionLocation;
+		this.userLocation = userLocation;
 		this.distanceToAttractionInMiles = distanceToAttractionInMiles;
 		this.rewardPoints = rewardPoints;
 	}
+
+	public Location getUserLocation() {
+		return userLocation;
+	}
+
+	public void setUserLocation(Location userLocation) {
+		this.userLocation = userLocation;
+	}
+
+	public Location getAttractionLocation() {
+		return attractionLocation;
+	}
+
+	public void setAttractionLocation(Location attractionLocation) {
+		this.attractionLocation = attractionLocation;
+	}
+
 	public String getAttractionName() {
 		return attractionName;
 	}
+
 	public void setAttractionName(String attractionName) {
 		this.attractionName = attractionName;
 	}
-	public double getAttractionLatitude() {
-		return attractionLatitude;
-	}
-	public void setAttractionLatitude(double attractionLatitude) {
-		this.attractionLatitude = attractionLatitude;
-	}
-	public double getAttractionLongitude() {
-		return attractionLongitude;
-	}
-	public void setAttractionLongitude(double attractionLongitude) {
-		this.attractionLongitude = attractionLongitude;
-	}
-	public double getUserLatitude() {
-		return userLatitude;
-	}
-	public void setUserLatitude(double userLatitude) {
-		this.userLatitude = userLatitude;
-	}
-	public double getUserLongitude() {
-		return userLongitude;
-	}
-	public void setUserLongitude(double userLongitude) {
-		this.userLongitude = userLongitude;
-	}
+
 	public double getDistanceToAttractionInMiles() {
 		return distanceToAttractionInMiles;
 	}
+
 	public void setDistanceToAttractionInMiles(double distanceToAttractionInMiles) {
 		this.distanceToAttractionInMiles = distanceToAttractionInMiles;
 	}
+
 	public int getRewardPoints() {
 		return rewardPoints;
 	}
+
 	public void setRewardPoints(int rewardPoints) {
 		this.rewardPoints = rewardPoints;
 	}
-	
 }
