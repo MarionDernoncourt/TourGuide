@@ -59,8 +59,14 @@ jobs:
       with:
         java-version: '17'
         distribution: 'temurin'
+    # 3️⃣ Installation des librairies locales
+    - name: Install local JAR dependencies
+      run: |
+        mvn install:install-file -Dfile=TourGuide/libs/gpsUtil.jar -DgroupId=gpsUtil -DartifactId=gpsUtil -Dversion=1.0.0 -Dpackaging=jar
+        mvn install:install-file -Dfile=TourGuide/libs/TripPricer.jar -DgroupId=tripPricer -DartifactId=tripPricer -Dversion=1.0.0 -Dpackaging=jar
+        mvn install:install-file -Dfile=TourGuide/libs/RewardCentral.jar -DgroupId=rewardCentral -DartifactId=rewardCentral -Dversion=1.0.0 -Dpackaging=jar
 
-    #3 Lancement des tests (exclusion des tests de performance) 
+    #4 Lancement des tests (exclusion des tests de performance) 
     - name: Run unit tests (excluding performance)
       run: mvn test --file TourGuide/pom.xml -Dtest=!highVolumeTrackLocation,!highVolumeGetRewards
   
