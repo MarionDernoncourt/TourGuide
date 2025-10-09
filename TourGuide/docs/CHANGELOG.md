@@ -15,8 +15,8 @@ Le format suit les principes de [Keep a Changelog](https://keepachangelog.com/fr
   
 ### Ajouté
 - **Ajout de la classe `NearbyAttractionDTO`** pour encapsuler et structurer les données renvoyées par la méthode `getNearbyAttractions` dans le contrôleur, facilitant la sérialisation JSON et la gestion des réponses API.
-- **Méthode `trackAllUserLocation()` dans `TourGuideService`** : permet de suivre la localisation de tous les utilisateurs de manière asynchrone avec `CompletableFuture` et `ExecutorService`, améliorant les performances par rapport à l'itération séquentielle.
-- **Méthode `calculateRewardsForAllUsers(List<User> users)` dans `RewardsService`** : permet de calculer les récompenses de tous les utilisateurs de manière asynchrone avec `CompletableFuture` et un `ExecutorService`, améliorant fortement les performances par rapport à l'itération séquentielle sur chaque utilisateur.
+- **Méthode `trackAllUserLocation()` dans `TourGuideService`** : permet de suivre la localisation de tous les utilisateurs de manière asynchrone avec `CompletableFuture` et `ExecutorService`, améliorant les performances par rapport à l'itération séquentielle dans le test de performance.
+- **Méthode `calculateRewardsForAllUsers(List<User> users)` dans `RewardsService`** : permet de calculer les récompenses de tous les utilisateurs de manière asynchrone avec `CompletableFuture` et un `ExecutorService`, améliorant fortement les performances par rapport à l'itération séquentielle sur chaque utilisateur dans le test de performance.
 
 
 ### Supprimé

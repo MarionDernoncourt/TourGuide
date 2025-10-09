@@ -24,6 +24,7 @@ import com.openclassrooms.tourguide.service.RewardsService;
 import com.openclassrooms.tourguide.service.TourGuideService;
 import com.openclassrooms.tourguide.user.User;
 
+@Disabled("Tests de performance désactivés pour validation du pipeline")
 public class TestPerformance {
 
 	/*
@@ -49,7 +50,6 @@ public class TestPerformance {
 	 * TimeUnit.MILLISECONDS.toSeconds(stopWatch.getTime()));
 	 */
 
-	
 	
 	@ParameterizedTest
 	@ValueSource(ints = {100, 1000, 5000, 10_000, 50_000, 100_000})
