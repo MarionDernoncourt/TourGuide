@@ -68,5 +68,5 @@ jobs:
 
     #4 Lancement des tests (exclusion des tests de performance) 
     - name: Run unit tests (excluding performance)
-      run: mvn test --file TourGuide/pom.xml -Dtest=!highVolumeTrackLocation,!highVolumeGetRewards
+      run: mvn test --file TourGuide/pom.xml 
   
