@@ -21,8 +21,8 @@ public class User {
 	//
 	private List<UserReward> userRewards = new ArrayList<>(); // liste de l'historique des récompenses reçues
 																// par le user
-	private UserPreferences userPreferences = new UserPreferences(); // liste des préférences (filtres) déterminés par
-																		// le user
+	private UserPreferences userPreferences = new UserPreferences(); // préférences (filtres) déterminés par le user
+	
 	private List<Provider> tripDeals = new ArrayList<>(); // liste des offres (récompenses) du user
 
 	public User(UUID userId, String userName, String phoneNumber, String emailAddress) {

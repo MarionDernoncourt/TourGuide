@@ -1,5 +1,6 @@
 package com.openclassrooms.tourguide.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
@@ -53,7 +54,7 @@ public class RewardsService {
 		// Récupère les lieux visités par l'utilisateur et toutes les attractions de
 		// manière safe-thread
 		List<VisitedLocation> userLocations = new CopyOnWriteArrayList<VisitedLocation>(user.getVisitedLocations());
-		List<Attraction> attractions = new CopyOnWriteArrayList<Attraction>(gpsUtil.getAttractions());
+		List<Attraction> attractions = new ArrayList<Attraction>(gpsUtil.getAttractions());
 
 		// Concurrent Set pour éviter les doublons de récompense
 		Set<String> rewardedAttractions = ConcurrentHashMap.newKeySet();

@@ -24,7 +24,7 @@ import com.openclassrooms.tourguide.service.RewardsService;
 import com.openclassrooms.tourguide.service.TourGuideService;
 import com.openclassrooms.tourguide.user.User;
 
-@Disabled("Tests de performance désactivés pour validation du pipeline")
+// @Disabled("Tests de performance désactivés pour validation du pipeline")
 public class TestPerformance {
 
 	/*
