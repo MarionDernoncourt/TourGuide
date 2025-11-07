@@ -22,7 +22,14 @@ import gpsUtil.location.Location;
 import gpsUtil.location.VisitedLocation;
 import jakarta.annotation.PreDestroy;
 import rewardCentral.RewardCentral;
-
+/**
+ * Service responsable du calcul des récompenses pour les utilisateurs
+ * en fonction des attractions qu'ils ont visitées.
+ * Ce service interagit avec GpsUtil pour les données de localisation, 
+ * et RewardCentral pour l'attribution des points.
+ * Il utilise un ExecutorService pour exécuter les calculs de récompenses 
+ * de manière asynchrone et optimisé.
+ */
 @Service
 public class RewardsService {
 

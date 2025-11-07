@@ -56,8 +56,7 @@ public class TestPerformance {
 	public void highVolumeTrackLocation(int userAccount) {
 		GpsUtil gpsUtil = new GpsUtil();
 		RewardsService rewardsService = new RewardsService(gpsUtil, new RewardCentral());
-		// Users should be incremented up to 100,000, and test finishes within 15
-		// minutes
+	
 		InternalTestHelper.setInternalUserNumber(userAccount);
 		TourGuideService tourGuideService = new TourGuideService(gpsUtil, rewardsService);
 
@@ -79,8 +78,6 @@ public class TestPerformance {
 		GpsUtil gpsUtil = new GpsUtil();
 		RewardsService rewardsService = new RewardsService(gpsUtil, new RewardCentral());
 
-		// Users should be incremented up to 100,000, and test finishes within 20
-		// minutes
 		InternalTestHelper.setInternalUserNumber(userAccount);
 		StopWatch stopWatch = new StopWatch();
 		stopWatch.start();

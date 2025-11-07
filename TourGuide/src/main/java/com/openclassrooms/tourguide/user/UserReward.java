@@ -2,7 +2,10 @@ package com.openclassrooms.tourguide.user;
 
 import gpsUtil.location.Attraction;
 import gpsUtil.location.VisitedLocation;
-
+/**
+ * Cette classe représente une récompense attribuée à un utilisateur pour avoir visité une attraction.
+ * Elle lie un lieu visité à l'attraction correspondante et stocke le nombre de récompenses attribuées.
+ */
 public class UserReward {
 
 	public final VisitedLocation visitedLocation; // représente une position géographique visitée précédemment (latitude, longitude)

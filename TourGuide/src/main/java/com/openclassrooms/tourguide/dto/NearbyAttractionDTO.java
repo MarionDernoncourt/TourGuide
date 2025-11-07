@@ -1,7 +1,12 @@
 package com.openclassrooms.tourguide.dto;
 
 import gpsUtil.location.Location;
-
+/** 
+ * DTO représentant une attraction à proximité d'un utilisateur
+ * Cette classe est utilisée pour transférer les informations essentielles sur une attraction
+ * (nom, localisation, distance de l'utilisateur et points de récompense) entre les couches
+ * de l'application, notamment pour l'affichage ou l'exposition via une API.
+ */
 public class NearbyAttractionDTO {
 
 	private String attractionName;

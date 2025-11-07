@@ -12,6 +12,12 @@ import org.slf4j.LoggerFactory;
 import com.openclassrooms.tourguide.service.TourGuideService;
 import com.openclassrooms.tourguide.user.User;
 
+/**
+ * Classe responsable du suivi périodique de la localisation de tous les utilisateurs.
+ * Elle étend Thread pour pouvoir s'exécuter dans un processus d'arrière-plan
+ * et utilise un ExecutorService pour gérer son propre cycle de vie.
+ */
+
 public class Tracker extends Thread {
 	private Logger logger = LoggerFactory.getLogger(Tracker.class);
 	private static final long trackingPollingInterval = TimeUnit.MINUTES.toSeconds(5);

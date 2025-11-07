@@ -35,7 +35,11 @@ import gpsUtil.location.VisitedLocation;
 import jakarta.annotation.PreDestroy;
 import tripPricer.Provider;
 import tripPricer.TripPricer;
-
+/**
+ * Service principal de l'application TourGuide. Il coordonne les opérations de
+ * géolocalisation, de suivi, de calcul de récompenses et de recherche de voyages.
+ * Il sert de façade aux autres services et librairies (gpsUtil, RewardsService et TripPricer.
+ */
 @Service
 public class TourGuideService {
 	private Logger logger = LoggerFactory.getLogger(TourGuideService.class);
