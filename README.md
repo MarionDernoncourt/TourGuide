@@ -3,6 +3,12 @@
 > **Projet de formation : Spécialisation Java Avancé**
 > *Focus : Programmation asynchrone, Multi-threading et scalabilité.*
 
+## 🛠️ Stack Technique & Concepts Clés
+- **Java 17** & **Spring Boot 3**
+- **Asynchronisme :** Utilisation intensive de `CompletableFuture` pour paralléliser les appels aux librairies externes (`gpsUtil` et `RewardCentral`).
+- **Concurrence :** Implémentation de `FixedThreadPool` pour gérer efficacement les ressources CPU lors du traitement de gros volumes de données.
+- **Tests :** JUnit 5 et bibliothèques de performance pour valider les temps de traitement sur 100 000 utilisateurs.
+- 
 ## Le défi technique
 Le projet initial était incapable de gérer la montée en charge. Le traitement séquentiel de 100 000 utilisateurs prenait plusieurs heures, ce qui étaitn inacceptable pour une application en temps réel.
 
