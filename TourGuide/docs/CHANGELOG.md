@@ -7,7 +7,7 @@ Le format suit les principes de [Keep a Changelog](https://keepachangelog.com/fr
 ## [Unreleased]
 
 ### Modifié
-- **Methode `RewardsService.calculateRewards(User user)`**: les listes `visitedLocation` et `attractions` sont maintenant de `CopyOnWriteArrayList` pour garantir la sécurité thread-safe et éviter les ConcurrentModificationsException lors du calcul des récompenses.
+- **Methode `RewardsService.calculateRewards(User user)`**: la liste `visitedLocation` est maintenant de `CopyOnWriteArrayList` pour garantir la sécurité thread-safe et éviter les ConcurrentModificationsException lors du calcul des récompenses.
 - **Méthode `getNearByAttractions(VisitedLocation visitedLocation)` de `TourGuideService`** : Modification de la logique de sélection des attractions : désormais, les 5 attractions les plus proches sont retournées, triées par distance, sans filtrage préalable sur la distance maximale.
 - **Test `highVolumeTrackLocation` dans `TestPerformance`** : modifié pour utiliser trackAllUserLocation() au lieu d'itérer sur tous les utilisateurs avec `trackUserLocation` de façon séquentielle afin d'améliorer la performance.
 - **Test `highVolumeGetRewards` dans `TestPerformance`** :  Refactoré pour utiliser `calculateRewardsForAllUsers()` au lieu de boucler sur chaque utilisateur avec `calculateRewards()` de manière séquentielle, réduisant le temps de calcule des récompenses pour un grand nombre d'utilisateurs.
