@@ -3,7 +3,7 @@
 > **Projet de formation : Spécialisation Java Avancé**
 > *Focus : Programmation asynchrone, Multi-threading et scalabilité.*
 >
-Retrouvez la [Documentation Technique et Fonctionnelle (PDF)](Dernoncourt_Marion_2_documentation_092025.pdf) pour une analyse détaillée du projet.
+Retrouvez la [Documentation Technique et Fonctionnelle (PDF)](./docs/Dernoncourt_Marion_2_documentation_092025.pdf) pour une analyse détaillée du projet.
 
 ## 🛠️ Stack Technique & Concepts Clés
 - **Java 17** & **Spring Boot 3**
